@@ -16,10 +16,14 @@ const usuariosGet = (req, res = response) => {
     });
   }
   const usuariosPost = (req, res = response) => {
+
+    const {nombre,edad} = req.body;
     res.json({
   
         ok:true,
-        msg:'POST API controller'
+        msg:'POST API controller',
+        nombre,
+       
     });
   }
   const usuariosDelete = (req, res = response) => {
