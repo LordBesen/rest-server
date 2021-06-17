@@ -1,6 +1,7 @@
 const {response,request} = require('express');
 const Usuario = require('../models/usuario')
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 const usuariosGet = (req = request, res = response) => {
 
@@ -24,14 +25,34 @@ const usuariosGet = (req = request, res = response) => {
   }
   const usuariosPost = async  (req, res = response) => {
 
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+
+
+     return res.status(400).json(errors);
+   }
+
     const {nombre,correo,password,rol} = req.body;
     const usuario = new Usuario({nombre,correo,password,rol});
     //verificar si el correo existe
+
+    const existeEmail = await Usuario.findOne({correo : correo});
+    if (existeEmail){
+      return res.status(400).json({
+
+
+        msg: 'El correo ya se encuentra registrado'
+      })
+
+
+    }
+
 
     //encriptar la contrase;a
     const salt = bcrypt.genSaltSync(10);
     usuario.password = bcrypt.hashSync(password,salt)
 
+    //salvar la informacion del usuario.
     await usuario.save();
     res.json({
   
