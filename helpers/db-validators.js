@@ -9,23 +9,29 @@ const esRoleValido = async(rol = '') => {
     }
 }
 
-const emailExiste = async(correo = '') => {
+const emailExiste = async( correo = '' ) => {
 
-    const existeEmail = await Usuario.findOne({correo : correo});
-    if (existeEmail){
-        throw new Error(`El correo ${correo} ya se encuentra registrado en la base de datos`);
-      
-
-
+    // Verificar si el correo existe
+    const existeEmail = await Usuario.findOne({ correo });
+    if ( existeEmail ) {
+        throw new Error(`El correo: ${ correo }, ya está registrado`);
     }
 }
 
+const existeUsuarioPorId = async( id ) => {
+
+    // Verificar si el correo existe
+    const existeUsuario = await Usuario.findById(id);
+    if ( !existeUsuario ) {
+        throw new Error(`El id no existe ${ id }`);
+    }
+}
 
 
 
 module.exports = {
     esRoleValido,
     emailExiste,
-   // existeUsuarioPorId
+    existeUsuarioPorId
 }
 
