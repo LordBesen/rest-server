@@ -1,14 +1,82 @@
 const { response } = require("express");
+const Usuario =  require('../models/usuario');
+const bcryptjs = require('bcryptjs');
 
 
 
-const login = (req, res = response) => {
+const login = async(req, res = response) => {
 
-    res.json({
+    const { correo,password} = req.body;
 
-        msg: 'Login OK'
-    })
 
+    try {
+
+
+
+        //verificar si mail existe
+
+        const usuario =  await Usuario.findOne({correo});
+        if (!usuario) {
+
+         return res.status(400).json({
+
+
+               msg:'Usuario/password no son correctos - correo',
+            });
+   }
+
+
+
+        //verificar estado del usuario
+        if (usuario.estado === false) {
+
+            return res.status(400).json({
+   
+   
+                  msg:'Usuario no se encuentra en la base de datos',
+               });
+      }
+
+
+
+        //verificar la contrase;a
+      const  validPassword = bcryptjs.compareSync(password,usuario.password)
+        if (!validPassword) {
+
+            return res.status(400).json({
+
+
+                msg:'Usuario/password no son correctos - password',
+             });
+
+
+        }
+
+
+        
+
+        // generar el jwt
+
+        res.json({
+
+            msg: 'Login OK',
+            
+        })
+    
+
+
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+
+
+            msg: ' Algo salio mal. Hable con el administrador'
+        })
+    }
+
+    
 
 }
 

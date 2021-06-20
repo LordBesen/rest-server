@@ -11,7 +11,8 @@ const router = Router();
 router.post('/login',[
 
 check('correo', 'El correo es obligatrio').isEmail(),
-validarCampos   
+
+check('password', 'La constraseña es obligatoria').not().isEmpty(),
 
 
 
